@@ -8,5 +8,5 @@ import reactor.core.publisher.Mono;
  * @date 2023/4/5 15:48
  */
 public interface SubscriptionService {
-    Mono<String> get();
+    Mono<String> get(String token);
 }

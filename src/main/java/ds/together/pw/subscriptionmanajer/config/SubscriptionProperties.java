@@ -16,11 +16,21 @@ import java.util.List;
 public class SubscriptionProperties {
     private List<Subscription> subscriptions;
 
+    private String token;
+
     public List<Subscription> getSubscriptions() {
         return subscriptions;
     }
 
     public void setSubscriptions(List<Subscription> subscriptions) {
         this.subscriptions = subscriptions;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

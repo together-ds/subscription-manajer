@@ -60,7 +60,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionServiceImpl.class);
 
     @Override
-    public Mono<String> get() {
+    public Mono<String> get(String token) {
+        if (!Objects.equals(subscriptionProperties.getToken(), token)) {
+            throw new RuntimeException("Unsupported token");
+        }
         return Flux.fromIterable(getSubscription())
                    .flatMap(this::extractProxies)
                    .collectList()

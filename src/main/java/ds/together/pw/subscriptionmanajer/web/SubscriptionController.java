@@ -34,9 +34,9 @@ public class SubscriptionController {
 
 
     @GetMapping(value = "/get", produces = MediaType.TEXT_PLAIN_VALUE)
-    public Mono<String> get() {
+    public Mono<String> get(String token) {
 
-        return subscriptionService.get();
+        return subscriptionService.get(token);
     }
 
 }
