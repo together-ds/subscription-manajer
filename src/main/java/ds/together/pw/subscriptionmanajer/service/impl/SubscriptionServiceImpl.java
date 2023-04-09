@@ -65,7 +65,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new RuntimeException("Unsupported token");
         }
         return Flux.fromIterable(getSubscription())
-                   .flatMap(this::extractProxies)
+                   .flatMapSequential (this::extractProxies)
                    .collectList()
                    .map(results -> {
                        Object o = this.combine(results);
