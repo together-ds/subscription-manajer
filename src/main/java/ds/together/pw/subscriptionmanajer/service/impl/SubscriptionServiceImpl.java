@@ -30,10 +30,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.time.Duration;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +67,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new RuntimeException("Unsupported token");
         }
         return Flux.fromIterable(getSubscription())
-                   .flatMapSequential (this::extractProxies)
+                   .flatMapSequential(this::extractProxies)
                    .collectList()
                    .map(results -> {
                        Object o = this.combine(results);
@@ -156,8 +158,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return webClient.get()
                         .uri(url)
                         .exchangeToMono(response -> response.bodyToMono(String.class))
+                        .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
                         .map(str -> {
-                            // TODO 这里的str如果是base64 则需要进行解析
                             SubscriptionResult result = new SubscriptionResult(subscription);
                             ArrayNode proxies;
                             try {
@@ -197,7 +199,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private static Map<String, Object> parseProxyInfo(String uri) {
         if (uri.startsWith(SS)) {
             return getSSInfo(uri);
-        }else if (uri.startsWith(TROJAN)){
+        } else if (uri.startsWith(TROJAN)) {
             return getTrojanInfo(uri);
         }
         // shouldn't happen
