@@ -1,4 +1,4 @@
-FROM --platform=$TARGETPLATFORM azul/zulu-openjdk:17
+FROM --platform=$TARGETPLATFORM zulu-openjdk-alpine:17-jre
 VOLUME [/tmp , /config]
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
