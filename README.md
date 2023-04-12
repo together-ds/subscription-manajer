@@ -9,7 +9,8 @@ docker stop manajer ; docker rm manajer; docker run -d \
 -p 8080:8080 \
 -v /etc/manajer:/config \
 --restart unless-stopped \
-togetherds/manajer:v0.1```
+togetherds/manajer:v0.1
+```
 
 
 ```shell
