@@ -163,10 +163,16 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                             SubscriptionResult result = new SubscriptionResult(subscription);
                             ArrayNode proxies;
                             try {
-                                proxies = getYamlProxies(name, str);
+                                proxies = getYamlProxies(str);
                             } catch (Exception e) {
                                 LOGGER.info("[{}] is not yaml config,try base64...", name);
                                 proxies = getBase64Proxies(name, str);
+                            }
+
+                            for (JsonNode proxy : proxies) {
+                                ObjectNode obj = (ObjectNode) proxy;
+                                String proxyName = obj.get("name").asText("");
+                                obj.set("name", new TextNode(MessageFormat.format("[{0}] {1}", name, proxyName)));
                             }
                             result.setProxies(proxies);
                             return result;
@@ -272,17 +278,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         map.put("password", Iterables.get((userInfo), 1, null));
 
 
-        //
-        //nodeConfig.obfs && ['tls', 'http'].includes(nodeConfig.obfs)
-        //        ? {
-        //        plugin: 'obfs',
-        //        'plugin-opts': {
-        //            mode: nodeConfig.obfs,
-        //            host: nodeConfig['obfs-host'],
-        //},
-        //        }
-        //      : null
-        //
 
         Object obfs = pluginInfo.get("obfs");
         Object simpleObfs = pluginInfo.get("simple-obfs");
@@ -332,16 +327,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
 
-    private ArrayNode getYamlProxies(String name, String str) {
+    private ArrayNode getYamlProxies(String str) {
         try {
             ArrayNode proxies;
             ObjectNode jsonNode = yamlMapper.readValue(str, ObjectNode.class);
             proxies = jsonNode.withArray("proxies");
-            for (JsonNode proxy : proxies) {
-                ObjectNode obj = (ObjectNode) proxy;
-                String proxyName = obj.get("name").asText("");
-                obj.set("name", new TextNode(MessageFormat.format("[{0}] {1}", name, proxyName)));
-            }
             return proxies;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
