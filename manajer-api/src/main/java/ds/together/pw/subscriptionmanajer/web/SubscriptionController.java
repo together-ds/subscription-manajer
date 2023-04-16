@@ -19,7 +19,7 @@ import java.nio.charset.StandardCharsets;
  */
 
 @RestController
-@RequestMapping("/subscribe")
+@RequestMapping("${manajer.base-path:}/subscribe")
 public class SubscriptionController {
     @Resource
     private SubscriptionService subscriptionService;

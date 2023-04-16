@@ -1,4 +1,5 @@
 spring:
   codec:
     max-in-memory-size: 4194304
-
+manajer1:
+  base-path=/api:
