@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static java.lang.Boolean.TRUE;
@@ -95,12 +96,15 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         List<ProxyGroup> selectProxyGroups = new ArrayList<>();
         for (SubscriptionResult result : results) {
             String groupName = result.getSubscription().getName();
-            List<String> proxies = StreamSupport.stream(result.getProxies().spliterator(), false)
-                                                .map(jsonNode -> jsonNode.get("name").asText())
-                                                .toList();
-            if (ObjectUtils.isEmpty(proxies)) {
-                continue;
+            ArrayNode proxies = result.getProxies();
+            if (proxies.isEmpty()) {
+                //continue;
+                proxies.add(this.getEmptyNode());
             }
+
+            List<String> proxyNames = StreamSupport.stream(proxies.spliterator(), false)
+                                                .map(jsonNode -> jsonNode.get("name").asText())
+                                                .collect(Collectors.toList());
 
             ProxyGroup auto = new ProxyGroup();
             auto.setName("[" + groupName + "] 自动选择");
@@ -108,7 +112,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             auto.setUrl("http://www.gstatic.com/generate_204");
             auto.setInterval(300);
             auto.setTolerance(50);
-            auto.setProxies(proxies);
+            auto.setProxies(proxyNames);
             autoProxyGroups.add(auto);
 
             ProxyGroup select = new ProxyGroup();
@@ -152,6 +156,18 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return root;
     }
 
+    private JsonNode getEmptyNode() {
+        ObjectNode objectNode = yamlMapper.createObjectNode();
+
+        objectNode.put("name", "empty");
+        objectNode.put("type", "ss");
+        objectNode.put("server", "server");
+        objectNode.put("port", 443);
+        objectNode.put("password", "password");
+        objectNode.put("cipher", "chacha20-ietf-poly1305");
+        return objectNode;
+    }
+
 
     private Mono<SubscriptionResult> extractProxies(Subscription subscription) {
         String url = subscription.getUrl();
@@ -160,7 +176,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         .uri(url)
                         .exchangeToMono(response -> response.bodyToMono(String.class))
                         .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
-                        .onErrorReturn("")
+                        .defaultIfEmpty("")
+                        .onErrorResume(e -> {
+                            LOGGER.info("获取[{}],失败. {}", name, e.getMessage());
+                            return Mono.just("");
+                        })
                         .map(str -> {
                             SubscriptionResult result = new SubscriptionResult(subscription);
                             ArrayNode proxies;
