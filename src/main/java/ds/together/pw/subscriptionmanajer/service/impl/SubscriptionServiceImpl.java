@@ -52,6 +52,7 @@ import static java.lang.Boolean.TRUE;
 public class SubscriptionServiceImpl implements SubscriptionService {
     public static final String TROJAN = "trojan://";
     public static final String SS = "ss://";
+    public static final String VMESS = "vmess://";
     @Resource
     private WebClient webClient;
     @Resource
@@ -199,7 +200,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if (ObjectUtils.isEmpty(s)) {
             return false;
         }
-        return s.startsWith(SS) || s.startsWith(TROJAN); //to support SSR+Vmess
+        return s.startsWith(SS) || s.startsWith(TROJAN) || s.startsWith(VMESS); //to support SSR+Vmess
     }
 
     private static Map<String, Object> parseProxyInfo(String uri) {
@@ -207,11 +208,48 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             return getSSInfo(uri);
         } else if (uri.startsWith(TROJAN)) {
             return getTrojanInfo(uri);
+        } else if (uri.startsWith(VMESS)) {
+            return getVmessInfo(uri);
         }
         // shouldn't happen
         throw new UnsupportedOperationException("unable to parse uri [" + uri + "]");
     }
 
+    private static Map<String, Object> getVmessInfo(String link)  {
+        HashMap<String, Object> result = Maps.newHashMap();
+        try {
+            String json = decodeBase64(link.replace(VMESS, ""));
+            ObjectMapper mapper = new ObjectMapper();
+            Map<String, Object> config = mapper.readValue(json, Map.class);
+
+            result.put("name", config.get("ps"));
+            result.put("type", "vmess");
+            result.put("server", config.get("add"));
+            result.put("port", config.get("port"));
+            result.put("cipher", "auto");
+            result.put("uuid", config.get("id"));
+            result.put("alterId", config.getOrDefault("aid", "0"));
+            result.put("tls", "tls".equals(config.get("tls")));
+            Object network = config.get("net");
+            if (Objects.equals(network, "ws")) {
+                var wsOpts = Maps.newHashMap();
+                var headers = Maps.newHashMap();
+                wsOpts.put("path", config.getOrDefault("path", "/"));
+                headers.put("host", config.get("add"));
+                wsOpts.put("headers", headers);
+                result.put("ws-opts", wsOpts);
+            }
+            if (!Objects.equals("tcp", network)) {
+                result.put("network", network);
+            }
+
+            return result;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
     private static Map<String, Object> getTrojanInfo(String uri) {
         UriComponents uriComponents = UriComponentsBuilder.fromUriString(uri).build();
         MultiValueMap<String, String> query = uriComponents.getQueryParams();

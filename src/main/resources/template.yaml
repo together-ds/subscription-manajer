@@ -19,8 +19,17 @@ proxy-groups:
     type: select
     proxies:
       - ♻️ 自动选择
+      - ⚖️ LB
       - DIRECT
       - $$selectGroups$$
+
+  - name: ⚖️ LB
+    type: load-balance
+    proxies:
+      - $$selectGroups$$
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    strategy: round-robin
 
   - name: ♻️ 自动选择
     type: url-test
