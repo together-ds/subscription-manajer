@@ -257,7 +257,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 var wsOpts = Maps.newHashMap();
                 var headers = Maps.newHashMap();
                 wsOpts.put("path", config.getOrDefault("path", "/"));
-                headers.put("host", config.get("host    "));
+                headers.put("host", config.get("host"));
                 wsOpts.put("headers", headers);
                 result.put("ws-opts", wsOpts);
             }
