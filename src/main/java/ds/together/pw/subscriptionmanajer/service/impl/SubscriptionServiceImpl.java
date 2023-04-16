@@ -160,6 +160,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                         .uri(url)
                         .exchangeToMono(response -> response.bodyToMono(String.class))
                         .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
+                        .onErrorReturn("")
                         .map(str -> {
                             SubscriptionResult result = new SubscriptionResult(subscription);
                             ArrayNode proxies;
@@ -216,7 +217,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     private static Map<String, Object> getVmessInfo(String link)  {
-        HashMap<String, Object> result = Maps.newHashMap();
+        Map<String, Object> result = Maps.newLinkedHashMap();
         try {
             String json = decodeBase64(link.replace(VMESS, ""));
             ObjectMapper mapper = new ObjectMapper();
@@ -230,12 +231,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             result.put("uuid", config.get("id"));
             result.put("alterId", config.getOrDefault("aid", "0"));
             result.put("tls", "tls".equals(config.get("tls")));
+            result.put("skip-cert-verify", true);
             Object network = config.get("net");
             if (Objects.equals(network, "ws")) {
                 var wsOpts = Maps.newHashMap();
                 var headers = Maps.newHashMap();
                 wsOpts.put("path", config.getOrDefault("path", "/"));
-                headers.put("host", config.get("add"));
+                headers.put("host", config.get("host    "));
                 wsOpts.put("headers", headers);
                 result.put("ws-opts", wsOpts);
             }
