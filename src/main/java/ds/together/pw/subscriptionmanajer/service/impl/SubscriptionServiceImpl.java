@@ -107,7 +107,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                                                 .collect(Collectors.toList());
 
             ProxyGroup auto = new ProxyGroup();
-            auto.setName("[" + groupName + "] 自动选择");
+            auto.setName("[" + groupName + "] AUTO");
             auto.setType("url-test");
             auto.setUrl("http://www.gstatic.com/generate_204");
             auto.setInterval(300);
@@ -116,7 +116,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             autoProxyGroups.add(auto);
 
             ProxyGroup select = new ProxyGroup();
-            select.setName("[" + groupName + "] 节点选择");
+            select.setName("[" + groupName + "]");
             select.setType("select");
             ArrayList<String> selectProxies = new ArrayList<>();
             selectProxies.add(auto.getName());
