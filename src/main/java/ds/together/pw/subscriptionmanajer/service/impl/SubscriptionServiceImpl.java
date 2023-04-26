@@ -33,6 +33,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.Duration;
@@ -173,7 +174,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         String url = subscription.getUrl();
         String name = subscription.getName();
         return webClient.get()
-                        .uri(url)
+                        .uri(URI.create(url))
                         .exchangeToMono(response -> response.bodyToMono(String.class))
                         .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
                         .defaultIfEmpty("")
