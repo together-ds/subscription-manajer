@@ -33,6 +33,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.Duration;
@@ -107,7 +108,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                                                 .collect(Collectors.toList());
 
             ProxyGroup auto = new ProxyGroup();
-            auto.setName("[" + groupName + "] 自动选择");
+            auto.setName("[" + groupName + "] AUTO");
             auto.setType("url-test");
             auto.setUrl("http://www.gstatic.com/generate_204");
             auto.setInterval(300);
@@ -116,7 +117,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             autoProxyGroups.add(auto);
 
             ProxyGroup select = new ProxyGroup();
-            select.setName("[" + groupName + "] 节点选择");
+            select.setName("[" + groupName + "]");
             select.setType("select");
             ArrayList<String> selectProxies = new ArrayList<>();
             selectProxies.add(auto.getName());
@@ -173,7 +174,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         String url = subscription.getUrl();
         String name = subscription.getName();
         return webClient.get()
-                        .uri(url)
+                        .uri(URI.create(url))
                         .exchangeToMono(response -> response.bodyToMono(String.class))
                         .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
                         .defaultIfEmpty("")
