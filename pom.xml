@@ -3,6 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.7</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
     <groupId>ds.together.pw</groupId>
     <artifactId>subscription-manajer</artifactId>
@@ -15,7 +21,6 @@
     </modules>
 
     <properties>
-        <spring.boot.version>3.0.7</spring.boot.version>
         <java.version>17</java.version>
         <java.source.version>17</java.source.version>
         <java.target.version>17</java.target.version>
@@ -25,16 +30,5 @@
         <docker.image.prefix>manajer</docker.image.prefix>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
-                <version>${spring.boot.version}</version>
-                <scope>import</scope>
-                <type>pom</type>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 
 </project>
