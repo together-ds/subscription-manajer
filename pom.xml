@@ -15,7 +15,7 @@
     </modules>
 
     <properties>
-        <spring.boot.version>3.0.5</spring.boot.version>
+        <spring.boot.version>3.0.7</spring.boot.version>
         <java.version>17</java.version>
         <java.source.version>17</java.source.version>
         <java.target.version>17</java.target.version>
@@ -23,7 +23,6 @@
         <maven.clean.version>3.2.0</maven.clean.version>
         <maven.resource.version>3.3.1</maven.resource.version>
         <docker.image.prefix>manajer</docker.image.prefix>
-        <file.encoding>UTF-8</file.encoding>
     </properties>
 
     <dependencyManagement>
@@ -48,7 +47,6 @@
                 <configuration>
                     <source>${java.source.version}</source>
                     <target>${java.target.version}</target>
-                    <encoding>${file.encoding}</encoding>
                 </configuration>
             </plugin>
         </plugins>

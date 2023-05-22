@@ -100,7 +100,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             ArrayNode proxies = result.getProxies();
             if (proxies.isEmpty()) {
                 //continue;
-                proxies.add(this.getEmptyNode());
+                proxies.add(this.getEmptyNode(groupName));
             }
 
             List<String> proxyNames = StreamSupport.stream(proxies.spliterator(), false)
@@ -157,10 +157,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return root;
     }
 
-    private JsonNode getEmptyNode() {
+    private JsonNode getEmptyNode(String groupName) {
         ObjectNode objectNode = yamlMapper.createObjectNode();
 
-        objectNode.put("name", "empty");
+        objectNode.put("name", "[" + groupName + "] empty");
         objectNode.put("type", "ss");
         objectNode.put("server", "server");
         objectNode.put("port", 443);
