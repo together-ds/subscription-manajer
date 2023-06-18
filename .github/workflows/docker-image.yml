@@ -47,7 +47,7 @@ jobs:
         context: .
         push: true
         platforms: linux/amd64,linux/arm64
-        tags:
-        - "togetherds/manajer:latest"
-        - "togetherds/manajer:$(date +%y%m%d-%H%M%S)"
+        tags: |
+         togetherds/manajer:latest
+         togetherds/manajer:$(date +%y%m%d-%H%M%S)
 
