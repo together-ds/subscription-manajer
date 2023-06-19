@@ -19,7 +19,7 @@ jobs:
       id: datetime
       run: |
         # Store current date and time in a variable
-        echo "::set-output name=timestamp::$(date +'%y%m%d')"
+        echo "timestamp=$(date +'%y%m%d')" >> $GITHUB_OUTPUT
 
     - uses: actions/checkout@v3
     
