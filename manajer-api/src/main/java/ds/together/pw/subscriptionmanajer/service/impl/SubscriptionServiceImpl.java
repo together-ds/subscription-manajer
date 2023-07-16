@@ -57,7 +57,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public static final String VMESS = "vmess://";
     @Resource
     private WebClient webClient;
-    @Resource
+    @Resource(name = "yamlMapper")
     private ObjectMapper yamlMapper;
     @Resource
     private SubscriptionProperties subscriptionProperties;

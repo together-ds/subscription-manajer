@@ -1,4 +1,4 @@
-package ds.together.pw.subscriptionmanajer.web;
+package ds.together.pw.subscriptionmanajer.api;
 
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
 import jakarta.annotation.Resource;
@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 /**
  * @author zkq
@@ -25,11 +24,11 @@ public class SubscriptionController {
     private SubscriptionService subscriptionService;
 
 
-    @GetMapping(value = "/get-template", produces = MediaType.TEXT_PLAIN_VALUE)
-    public Mono<String> getTemplate() throws IOException {
+    @GetMapping(value = "/get-template", produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")
+    public Mono<org.springframework.core.io.Resource> getTemplate() throws IOException {
         ClassPathResource resource = new ClassPathResource("template.yaml");
-        String template = resource.getContentAsString(StandardCharsets.UTF_8);
-        return Mono.just(template);
+        //String template = resource.getContentAsString(StandardCharsets.UTF_8);
+        return Mono.just(resource);
     }
 
 

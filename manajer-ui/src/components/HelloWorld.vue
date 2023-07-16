@@ -138,7 +138,7 @@ export default {
   // 例如这个函数就会在组件挂载完成后被调用
   async mounted() {
     console.log(`The initial count is ${this.count}.`);
-    let resp = await axios.get("/subscribe/get-template");
+    let resp = await axios.get("/api/subscribe/get-template");
     this.axios = resp;
   },
 };

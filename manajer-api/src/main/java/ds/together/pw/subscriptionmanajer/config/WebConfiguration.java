@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
@@ -19,10 +21,16 @@ public class WebConfiguration {
         return builder.build();
     }
 
-    @Bean
+    @Bean(name = "yamlMapper")
     public ObjectMapper yamlMapper(){
         YAMLFactory jf = new YAMLFactory();
         return new ObjectMapper(jf);
+    }
+
+    @Bean
+    @Primary
+    ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
+        return builder.createXmlMapper(false).build();
     }
 
 }
