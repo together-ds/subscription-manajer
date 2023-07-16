@@ -6,8 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.HashMap;
-
 @SpringBootApplication
 public class SubscriptionManajerApplication implements CommandLineRunner {
 
@@ -15,9 +13,6 @@ public class SubscriptionManajerApplication implements CommandLineRunner {
 
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(SubscriptionManajerApplication.class);
-        HashMap<String, Object> defaultProperties = new HashMap<>();
-        //defaultProperties.put("manajer.base-path", "/api");
-        application.setDefaultProperties(defaultProperties);
         application.run(args);
     }
 
