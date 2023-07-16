@@ -16,6 +16,7 @@ import ds.together.pw.subscriptionmanajer.entity.ProxyGroup;
 import ds.together.pw.subscriptionmanajer.entity.Subscription;
 import ds.together.pw.subscriptionmanajer.entity.SubscriptionResult;
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
+import ds.together.pw.subscriptionmanajer.util.Beans;
 import jakarta.annotation.Resource;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 import reactor.util.retry.Retry;
 
 import java.io.IOException;
@@ -70,8 +72,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             throw new RuntimeException("Unsupported token");
         }
         return Flux.fromIterable(getSubscription())
-                   .flatMapSequential(this::extractProxies)
-                   .collectList()
+                   .flatMap(this::extractProxies)
+                   .subscribeOn(Schedulers.parallel())
+                   .collectSortedList(Comparator.comparingInt(value -> value.getSubscription().getOrder()))
                    .map(results -> {
                        Object o = this.combine(results);
                        try {
@@ -187,6 +190,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                             ArrayNode proxies;
                             try {
                                 proxies = getYamlProxies(str);
+                                LOGGER.info("[{}] is yaml config.", name);
                             } catch (Exception e) {
                                 LOGGER.info("[{}] is not yaml config,try base64...", name);
                                 proxies = getBase64Proxies(name, str);
@@ -400,7 +404,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     }
 
     private List<Subscription> getSubscription() {
-        return subscriptionProperties.getSubscriptions();
+
+        List<Subscription> list = Beans.copyList(subscriptionProperties.getSubscriptions(), Subscription.class);
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setOrder(i);
+        }
+        return list;
     }
 
 }

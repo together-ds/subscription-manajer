@@ -3,11 +3,12 @@ package ds.together.pw.subscriptionmanajer.entity;
 /**
  * @author zkq
  * @version 1.0
- * @date 2023/4/5 18:37
+ * at 2023/4/5 18:37
  */
 public class Subscription {
     private String name;
     private String url;
+    private int order;
 
     public Subscription() {
     }
@@ -31,5 +32,13 @@ public class Subscription {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
