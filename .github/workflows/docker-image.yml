@@ -34,7 +34,7 @@ jobs:
 #    - run: npm test
     - name: Copy dist
       run: |
-        cp manajer-ui/dist manajer-api/src/main/resources/static
+        cp -r manajer-ui/dist manajer-api/src/main/resources/static
 
 #   Build java source
     - name: Set up JDK 17
