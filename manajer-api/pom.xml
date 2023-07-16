@@ -6,9 +6,10 @@
         <groupId>ds.together.pw</groupId>
         <artifactId>subscription-manajer</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>manajer-api</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${parent.version}</version>
     <name>manajer-api</name>
     <description>Demo project for Spring Boot</description>
     <properties>
