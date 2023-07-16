@@ -19,6 +19,7 @@ jobs:
 
 #   Build node source
     - name: Use Node.js
+      working-directory: manajer-ui
       uses: actions/setup-node@v3
       with:
         node-version: 18.x
