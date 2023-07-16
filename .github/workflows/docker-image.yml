@@ -1,5 +1,8 @@
 name: Docker Image CI
 
+env:
+  IMAGE_NAME: manajer
+
 on:
   push:
     branches: [ "main" ]
@@ -9,32 +12,29 @@ on:
 jobs:
 
   build:
-
     runs-on: ubuntu-latest
-
-
     steps:
-
-    - name: Get current datetime
-      id: datetime
-      run: |
-        # Store current date and time in a variable
-        echo "timestamp=$(date +'%y%m%d')" >> $GITHUB_OUTPUT
-
     - uses: actions/checkout@v3
-    
+
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         java-version: '17'
-        distribution: 'temurin'
+        distribution: 'zulu'
         cache: maven
+
+    - name: Print Build Environment
+      run: |
+        java -version
+        mvn --version
+
+    - name: Set environment variables
+      run: |
+        echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)" >> $GITHUB_ENV
+        echo "YYMMDD=$(date +'%y%m%d')" >> $GITHUB_ENV
 
     - name: Build with Maven
       run: mvn -DskipTests=true -B package --file pom.xml
-
-#    - name: Set up QEMU
-#      uses: docker/setup-qemu-action@v2
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -47,8 +47,6 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-#    - name: Build the Docker image
-#      run: docker buildx build --platform linux/arm64/v8,linux/amd64 . --file Dockerfile --tag my-image-name:$(date +%s) --push
     - name: Build and push Docker images
       uses: docker/build-push-action@v4.1.1
       with:
@@ -56,6 +54,6 @@ jobs:
         push: true
         platforms: linux/amd64,linux/arm64
         tags: |
-         togetherds/manajer:latest
-         togetherds/manajer:${{ steps.datetime.outputs.timestamp }}-${{ github.run_number }}
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
+          ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}-${{ env.YYMMDD }}.${{ github.run_number }}
 
