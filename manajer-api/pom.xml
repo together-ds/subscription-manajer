@@ -3,39 +3,54 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>ds.together.pw</groupId>
-        <artifactId>subscription-manajer</artifactId>
-        <version>1.0.0</version>
-        <relativePath>../pom.xml</relativePath>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.8</version>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <artifactId>manajer-api</artifactId>
-    <version>${project.parent.version}</version>
-    <name>manajer-api</name>
-    <description>Demo project for Spring Boot</description>
+    <artifactId>subscription-manajer</artifactId>
+    <version>1.0.0</version>
+    <name>subscription-manajer</name>
+    <description>Clash subscription manager</description>
     <properties>
         <java.version>17</java.version>
+        <java.source.version>17</java.source.version>
+        <java.target.version>17</java.target.version>
         <docker.image.prefix>manajer</docker.image.prefix>
     </properties>
+
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-r2dbc</artifactId>
         </dependency>
         <dependency>
             <groupId>io.r2dbc</groupId>
             <artifactId>r2dbc-h2</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>32.1.1-jre</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -46,16 +61,6 @@
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>31.1-jre</version>
-        </dependency>
 
     </dependencies>
 
@@ -65,64 +70,9 @@
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <!--解决打包后，执行java -jar 命令，找不到主清单属性-->
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--clean插件-->
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-clean-plugin</artifactId>-->
-<!--                <version>${maven.clean.version}</version>-->
-<!--                <configuration>-->
-<!--                    <filesets>-->
-<!--                        <fileset>-->
-<!--                            <directory>src/main/resources/static</directory>-->
-<!--                        </fileset>-->
-<!--                        <fileset>-->
-<!--                            <directory>src/main/resources/templates</directory>-->
-<!--                        </fileset>-->
-<!--                    </filesets>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-            <!--资源插件，主要为了从前端项目里复制打包好的文件到springboot项目-->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>${maven.resource.version}</version>
-                <executions>
-                    <execution>
-                        <id>copy static</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>target/classes/static</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <resources>
-                                <resource>
-                                    <!--因为vue-cli打包的目录在项目的根目录，所以从这里复制-->
-                                    <directory>${project.parent.basedir}/manajer-ui/dist</directory>
-                                    <includes>
-                                        <include>*</include>
-                                        <include>assets/</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
