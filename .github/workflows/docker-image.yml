@@ -27,6 +27,7 @@ jobs:
     - name: Print Build Environment
       working-directory: manajer-api
       run: |
+        chmod +x ./mvnw
         java -version
         ./mvnw --version
 
