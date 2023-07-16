@@ -5,11 +5,11 @@
     <parent>
         <groupId>ds.together.pw</groupId>
         <artifactId>subscription-manajer</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>manajer-api</artifactId>
-    <version>${parent.version}</version>
+    <version>${project.parent.version}</version>
     <name>manajer-api</name>
     <description>Demo project for Spring Boot</description>
     <properties>
