@@ -11,11 +11,8 @@ on:
 
 jobs:
 
-  manajer-api:
+  build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: manajer-api
 
     steps:
     - uses: actions/checkout@v3
@@ -28,16 +25,19 @@ jobs:
         cache: maven
 
     - name: Print Build Environment
+      working-directory: manajer-api
       run: |
         java -version
-        mvn --version
+        ./mvnw --version
 
     - name: Set environment variables
+      working-directory: manajer-api
       run: |
-        echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)" >> $GITHUB_ENV
+        echo "VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)" >> $GITHUB_ENV
         echo "YYMMDD=$(date +'%y%m%d')" >> $GITHUB_ENV
 
     - name: Build with Maven
+      working-directory: manajer-api
       run: mvn -DskipTests=true -B package --file pom.xml
 
     - name: Set up Docker Buildx
@@ -53,6 +53,7 @@ jobs:
 
 #    - name: Build and push Docker images
 #      uses: docker/build-push-action@v4.1.1
+#      working-directory: manajer-api
 #      with:
 #        context: .
 #        push: true
