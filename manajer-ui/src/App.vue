@@ -1,19 +1,12 @@
 <template>
   <div class="app">
-    <!-- <Layout></Layout> -->
   <RouterView />
   </div>
 </template>
 
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-// import HelloWorld from './components/HelloWorld.vue'
-// import Layout  from './components/layout/index.vue'
-// export default {
-//   components: {
-    // Layout
-//   }
-// }
+
 </script>
 <style scoped>
 header {
