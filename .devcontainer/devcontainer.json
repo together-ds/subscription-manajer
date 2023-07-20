@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/javascript-node
 {
-    "name": "Node.js",
+    "name": "Manajer",
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
     "image": "mcr.microsoft.com/devcontainers/javascript-node:0-18-bullseye",
     // Features to add to the dev container. More info: https://cdoontainers.dev/features.
@@ -11,7 +11,7 @@
             "installMaven": true
         },
         "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            
+
         }
     },
     // Configure tool-specific properties.
@@ -20,7 +20,8 @@
         "vscode": {
             "settings": {},
             "extensions": [
-                "streetsidesoftware.code-spell-checker"
+                //"streetsidesoftware.code-spell-checker",
+                "vue.volar"
             ]
         }
     },
@@ -35,7 +36,7 @@
     //        }
     //    },
     // Use 'postCreateCommand' to run commands after the container is created.
-    //    "postCreateCommand": "yarn install"
+    "postCreateCommand": "bash ./.devcontainer/postCreateCommand.sh"
     // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
     // "remoteUser": "root"
 }
