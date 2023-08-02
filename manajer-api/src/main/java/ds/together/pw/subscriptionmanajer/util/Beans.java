@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * @date 2023/7/16 21:33
+ * @since 2023/7/16 21:33
  */
 public class Beans {
 

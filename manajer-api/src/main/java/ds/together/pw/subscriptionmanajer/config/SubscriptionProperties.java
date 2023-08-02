@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * @date 2023/4/9 20:44
+ * @since 2023/4/9 20:44
  */
 @Component
 @ConfigurationProperties(prefix = "manajer")

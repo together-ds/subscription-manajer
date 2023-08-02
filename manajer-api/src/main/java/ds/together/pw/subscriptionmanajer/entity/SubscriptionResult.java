@@ -3,9 +3,9 @@ package ds.together.pw.subscriptionmanajer.entity;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * @date 2023/4/5 18:51
+ * @since 2023/4/5 18:51
  */
 public class SubscriptionResult {
     private final Subscription subscription;
