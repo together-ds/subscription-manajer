@@ -48,7 +48,7 @@ jobs:
           java --version
           native-image --version
           mvn --version
-          mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml
+          mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file manajer-api/pom.xml
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
