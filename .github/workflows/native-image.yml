@@ -59,6 +59,9 @@ jobs:
         run: |
           echo "VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml)" >> $GITHUB_ENV
           echo "PROJECT_NAME=$(mvn help:evaluate -Dexpression=project.name -q -DforceStdout --file pom.xml)" >> $GITHUB_ENV
+
+      - name: Print Build Environment
+        run: |
           echo "${{ env.PROJECT_NAME }}:${{ env.VERSION }} ${{env.IMAGE_NAME}}"
       - name: Build with Maven & push to docker hub
         working-directory: manajer-api
