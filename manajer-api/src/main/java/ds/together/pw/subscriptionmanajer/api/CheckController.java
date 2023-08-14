@@ -8,7 +8,7 @@ import reactor.core.publisher.Mono;
 
 /**
  * HealthCheck
- * @author zkq
+ * @author x
  * @version 1.0
  */
 @RestController

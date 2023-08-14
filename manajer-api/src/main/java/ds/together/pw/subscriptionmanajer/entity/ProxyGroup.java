@@ -3,9 +3,9 @@ package ds.together.pw.subscriptionmanajer.entity;
 import java.util.List;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * @date 2023/4/5 17:23
+ * @since 2023/4/5 17:23
  */
 public class ProxyGroup {
     private String name;

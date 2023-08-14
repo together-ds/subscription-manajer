@@ -9,9 +9,9 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * @date 2023/4/5 15:57
+ * @since 2023/4/5 15:57
  */
 
 @Configuration

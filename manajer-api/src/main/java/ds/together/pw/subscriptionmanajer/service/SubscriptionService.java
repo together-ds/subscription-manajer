@@ -3,9 +3,9 @@ package ds.together.pw.subscriptionmanajer.service;
 import reactor.core.publisher.Mono;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * @date 2023/4/5 15:48
+ * @since 2023/4/5 15:48
  */
 public interface SubscriptionService {
     Mono<String> get(String token);

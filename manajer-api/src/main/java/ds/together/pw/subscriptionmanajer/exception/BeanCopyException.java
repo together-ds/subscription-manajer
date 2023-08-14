@@ -1,9 +1,9 @@
 package ds.together.pw.subscriptionmanajer.exception;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * at 2023/7/16 21:52
+ * @since 2023/7/16 21:52
  */
 public class BeanCopyException extends RuntimeException{
     public BeanCopyException() {

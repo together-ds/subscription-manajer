@@ -1,9 +1,9 @@
 package ds.together.pw.subscriptionmanajer.entity;
 
 /**
- * @author zkq
+ * @author x
  * @version 1.0
- * at 2023/4/5 18:37
+ * @since 2023/4/5 18:37
  */
 public class Subscription {
     private String name;
