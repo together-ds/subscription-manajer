@@ -1,5 +1,5 @@
 ARG TARGETPLATFORM
-FROM azul/zulu-openjdk-alpine:17-jre
+FROM ibm-semeru-runtimes:open-17-jre
 VOLUME [/tmp , /config]
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} app.jar
