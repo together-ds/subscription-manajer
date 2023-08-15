@@ -1,13 +1,10 @@
 package ds.together.pw.subscriptionmanajer.entity;
 
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
-
 /**
  * @author x
  * @version 1.0
  * @since 2023/4/5 18:37
  */
-@RegisterReflectionForBinding
 public class Subscription {
     private String name;
     private String url;
