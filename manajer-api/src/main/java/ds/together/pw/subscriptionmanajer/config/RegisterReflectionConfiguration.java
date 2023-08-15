@@ -7,6 +7,7 @@ import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.context.annotation.Configuration;
 
 /**
+ * 需要序列化的类，放到RegisterReflectionForBinding里。否则 native image无法完成序列化
  * @author : x
  * @version : 1.0
  * @since : 2023/8/15
