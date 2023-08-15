@@ -1,8 +1,12 @@
 package ds.together.pw.subscriptionmanajer.api;
 
+import com.google.common.base.Stopwatch;
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,9 +27,10 @@ public class SubscriptionController {
     @Autowired
     private SubscriptionService subscriptionService;
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
 
     @GetMapping(value = "/get-template", produces = MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8")
-    public Mono<org.springframework.core.io.Resource> getTemplate() throws IOException {
+    public Mono<Resource> getTemplate() throws IOException {
         ClassPathResource resource = new ClassPathResource("template.yaml");
         //String template = resource.getContentAsString(StandardCharsets.UTF_8);
         return Mono.just(resource);
@@ -34,8 +39,10 @@ public class SubscriptionController {
 
     @GetMapping(value = "/get", produces = MediaType.TEXT_PLAIN_VALUE)
     public Mono<String> get(String token) {
-
-        return subscriptionService.get(token);
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        return subscriptionService.get(token).doFinally(s -> {
+            LOGGER.info("The request takes {}", stopwatch.stop());
+        });
     }
 
 }
