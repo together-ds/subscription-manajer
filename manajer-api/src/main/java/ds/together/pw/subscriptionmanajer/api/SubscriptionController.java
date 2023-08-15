@@ -1,7 +1,7 @@
 package ds.together.pw.subscriptionmanajer.api;
 
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
-import jakarta.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("${manajer.base-path:}/subscribe")
 public class SubscriptionController {
-    @Resource
+    @Autowired
     private SubscriptionService subscriptionService;
 
 

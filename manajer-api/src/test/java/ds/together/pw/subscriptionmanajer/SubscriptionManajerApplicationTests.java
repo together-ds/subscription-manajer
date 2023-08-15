@@ -2,16 +2,16 @@ package ds.together.pw.subscriptionmanajer;
 
 import ds.together.pw.subscriptionmanajer.config.SubscriptionProperties;
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
-import jakarta.annotation.Resource;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class SubscriptionManajerApplicationTests {
 
-	@Resource
+	@Autowired
 	private SubscriptionProperties subscriptionProperties;
-	@Resource
+	@Autowired
 	private SubscriptionService subscriptionService;
 
 	@Test

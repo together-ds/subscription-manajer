@@ -17,10 +17,11 @@ import ds.together.pw.subscriptionmanajer.entity.Subscription;
 import ds.together.pw.subscriptionmanajer.entity.SubscriptionResult;
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
 import ds.together.pw.subscriptionmanajer.util.Beans;
-import jakarta.annotation.Resource;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -39,13 +40,20 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.lang.Boolean.TRUE;
+import static java.lang.Boolean.*;
 
 /**
  * @author x
@@ -57,11 +65,12 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     public static final String TROJAN = "trojan://";
     public static final String SS = "ss://";
     public static final String VMESS = "vmess://";
-    @Resource
+    @Autowired
     private WebClient webClient;
-    @Resource(name = "yamlMapper")
+    @Autowired
+    @Qualifier("yamlMapper")
     private ObjectMapper yamlMapper;
-    @Resource
+    @Autowired
     private SubscriptionProperties subscriptionProperties;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionServiceImpl.class);
