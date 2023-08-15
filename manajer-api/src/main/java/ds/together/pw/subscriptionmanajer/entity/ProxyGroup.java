@@ -1,5 +1,7 @@
 package ds.together.pw.subscriptionmanajer.entity;
 
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
+
 import java.util.List;
 
 /**
@@ -7,6 +9,7 @@ import java.util.List;
  * @version 1.0
  * @since 2023/4/5 17:23
  */
+@RegisterReflectionForBinding
 public class ProxyGroup {
     private String name;
     private String type;

@@ -1,12 +1,14 @@
 package ds.together.pw.subscriptionmanajer.entity;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 
 /**
  * @author x
  * @version 1.0
  * @since 2023/4/5 18:51
  */
+@RegisterReflectionForBinding
 public class SubscriptionResult {
     private final Subscription subscription;
     private ArrayNode proxies;
