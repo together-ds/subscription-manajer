@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Manajer Docker Image
 
 env:
   IMAGE_NAME: manajer

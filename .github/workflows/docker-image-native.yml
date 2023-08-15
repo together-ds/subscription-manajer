@@ -1,6 +1,6 @@
 # Build the native image (x86 only)
 
-name: Spring Boot(Native Image)
+name: Manajer Docker Image(Native)
 
 env:
   IMAGE_NAME: manajer
