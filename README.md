@@ -3,17 +3,17 @@ A clash subscription manager app.
 
 start with docker
 ```shell
-docker stop manajer0 && docker rm manajer0
-docker pull togetherds/manajer:native-latest
+docker stop manajer && docker rm manajer
+docker pull togetherds/manajer:latest
 
 docker run --user $(id -u):$(id -g) -d \
---name manajer0 \
+--name manajer \
 -p 8081:8080 \
 -v ~/manajer:/config \
 --restart unless-stopped \
-togetherds/manajer:native-latest --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml
+togetherds/manajer:latest --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml
 
-docker logs -f manajer0
+docker logs -f manajer
 ```
 
 start with docker(native-image)
