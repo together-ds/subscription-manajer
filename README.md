@@ -3,16 +3,17 @@ A clash subscription manager app.
 
 start with docker
 ```shell
-docker stop manajer
-docker rm manajer
-docker pull togetherds/manajer
-docker run -d \
--e JAVA_OPTS="-XX:+UseCompressedClassPointers " \
---name manajer \
--p 8080:8080 \
--v /etc/manajer:/config \
+docker stop manajer0 && docker rm manajer0
+docker pull togetherds/manajer:native-latest
+
+docker run --user $(id -u):$(id -g) -d \
+--name manajer0 \
+-p 8081:8080 \
+-v ~/manajer:/config \
 --restart unless-stopped \
-togetherds/manajer
+togetherds/manajer:native-latest --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml
+
+docker logs -f manajer0
 ```
 
 start with docker(native-image)
@@ -22,10 +23,10 @@ docker stop manajer0
 docker rm manajer0
 docker pull togetherds/manajer:native-latest
 
-docker run -d \
+docker run  --user $(id -u):$(id -g)  -d \
 --name manajer0 \
--p 8080:8080 \
--v /etc/manajer:/config \
+-p 8081:8080 \
+-v ~/manajer:/config \
 --restart unless-stopped \
 togetherds/manajer:native-latest \ 
 --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml \
