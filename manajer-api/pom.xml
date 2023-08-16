@@ -10,7 +10,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <artifactId>subscription-manajer</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>subscription-manajer</name>
     <description>Clash subscription manager</description>
     <properties>
