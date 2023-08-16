@@ -2,6 +2,7 @@
     "resources": {
         "includes": [
             { "pattern": ".*sql$" } ,
+            { "pattern": "/db/migration/.*sql$" } ,
             { "pattern": ".*yaml$" }
         ]
     }
