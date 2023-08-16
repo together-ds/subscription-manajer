@@ -15,6 +15,7 @@ import ds.together.pw.subscriptionmanajer.config.SubscriptionProperties;
 import ds.together.pw.subscriptionmanajer.entity.ProxyGroup;
 import ds.together.pw.subscriptionmanajer.entity.Subscription;
 import ds.together.pw.subscriptionmanajer.entity.SubscriptionResult;
+import ds.together.pw.subscriptionmanajer.service.MaCacheService;
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
 import ds.together.pw.subscriptionmanajer.util.Beans;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -40,20 +41,13 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.lang.Boolean.*;
+import static java.lang.Boolean.TRUE;
 
 /**
  * @author x
@@ -73,6 +67,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     @Autowired
     private SubscriptionProperties subscriptionProperties;
 
+    @Autowired
+    private MaCacheService maCacheService;
     private static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionServiceImpl.class);
 
     @Override
@@ -116,8 +112,8 @@ public class SubscriptionServiceImpl implements SubscriptionService {
             }
 
             List<String> proxyNames = StreamSupport.stream(proxies.spliterator(), false)
-                                                .map(jsonNode -> jsonNode.get("name").asText())
-                                                .collect(Collectors.toList());
+                                                   .map(jsonNode -> jsonNode.get("name").asText())
+                                                   .collect(Collectors.toList());
 
             ProxyGroup auto = new ProxyGroup();
             auto.setName("[" + groupName + "] AUTO");
@@ -185,34 +181,39 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private Mono<SubscriptionResult> extractProxies(Subscription subscription) {
         String url = subscription.getUrl();
         String name = subscription.getName();
-        return webClient.get()
-                        .uri(URI.create(url))
-                        .exchangeToMono(response -> response.bodyToMono(String.class))
-                        .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
-                        .defaultIfEmpty("")
-                        .onErrorResume(e -> {
-                            LOGGER.info("获取[{}],失败. {}", name, e.getMessage());
-                            return Mono.just("");
-                        })
-                        .map(str -> {
-                            SubscriptionResult result = new SubscriptionResult(subscription);
-                            ArrayNode proxies;
-                            try {
-                                proxies = getYamlProxies(str);
-                                LOGGER.info("[{}] is yaml config.", name);
-                            } catch (Exception e) {
-                                LOGGER.info("[{}] is not yaml config,try base64...", name);
-                                proxies = getBase64Proxies(name, str);
-                            }
 
-                            for (JsonNode proxy : proxies) {
-                                ObjectNode obj = (ObjectNode) proxy;
-                                String proxyName = obj.get("name").asText("");
-                                obj.set("name", new TextNode(MessageFormat.format("[{0}] {1}", name, proxyName)));
-                            }
-                            result.setProxies(proxies);
-                            return result;
-                        });
+        Mono<SubscriptionResult> loader =
+                webClient.get()
+                         .uri(URI.create(url))
+                         .exchangeToMono(response -> response.bodyToMono(String.class))
+                         .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
+                         .defaultIfEmpty("")
+                         .onErrorResume(e -> {
+                             LOGGER.info("获取[{}],失败. {}", name, e.getMessage());
+                             return Mono.just("");
+                         })
+                         .map(str -> {
+                             SubscriptionResult result = new SubscriptionResult(subscription);
+                             ArrayNode proxies;
+                             try {
+                                 proxies = getYamlProxies(str);
+                                 LOGGER.info("[{}] is yaml config.", name);
+                             } catch (Exception e) {
+                                 LOGGER.info("[{}] is not yaml config,try base64...", name);
+                                 proxies = getBase64Proxies(name, str);
+                             }
+
+                             for (JsonNode proxy : proxies) {
+                                 ObjectNode obj = (ObjectNode) proxy;
+                                 String proxyName = obj.get("name").asText("");
+                                 obj.set("name",
+                                         new TextNode(MessageFormat.format("[{0}] {1}", name, proxyName)));
+                             }
+                             result.setProxies(proxies);
+                             return result;
+                         });
+        return maCacheService.load(name + "@" + url, loader, new TypeReference<>() {
+        });
     }
 
     private ArrayNode getBase64Proxies(String name, String str) {
@@ -250,7 +251,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         throw new UnsupportedOperationException("unable to parse uri [" + uri + "]");
     }
 
-    private static Map<String, Object> getVmessInfo(String link)  {
+    private static Map<String, Object> getVmessInfo(String link) {
         Map<String, Object> result = Maps.newLinkedHashMap();
         try {
             String json = decodeBase64(link.replace(VMESS, ""));
@@ -286,6 +287,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
 
     }
+
     private static Map<String, Object> getTrojanInfo(String uri) {
         UriComponents uriComponents = UriComponentsBuilder.fromUriString(uri).build();
         MultiValueMap<String, String> query = uriComponents.getQueryParams();
@@ -350,7 +352,6 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
         map.put("cipher", Iterables.get((userInfo), 0, null));
         map.put("password", Iterables.get((userInfo), 1, null));
-
 
 
         Object obfs = pluginInfo.get("obfs");

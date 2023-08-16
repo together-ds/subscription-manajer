@@ -8,13 +8,19 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * @since 2023/4/5 18:51
  */
 public class SubscriptionResult {
-    private final Subscription subscription;
+    private Subscription subscription;
     private ArrayNode proxies;
+
+    public SubscriptionResult() {
+    }
 
     public SubscriptionResult(Subscription subscription) {
         this.subscription = subscription;
     }
 
+    public Subscription getSubscription() {
+        return subscription;
+    }
 
     public ArrayNode getProxies() {
         return proxies;
@@ -22,9 +28,5 @@ public class SubscriptionResult {
 
     public void setProxies(ArrayNode proxies) {
         this.proxies = proxies;
-    }
-
-    public Subscription getSubscription() {
-        return subscription;
     }
 }

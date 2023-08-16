@@ -1,6 +1,7 @@
 package ds.together.pw.subscriptionmanajer.api;
 
 import com.google.common.base.Stopwatch;
+import ds.together.pw.subscriptionmanajer.repository.MaCacheRepository;
 import ds.together.pw.subscriptionmanajer.service.SubscriptionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +27,8 @@ import java.io.IOException;
 public class SubscriptionController {
     @Autowired
     private SubscriptionService subscriptionService;
+    @Autowired
+    private MaCacheRepository maCacheRepository;
 
     public static final Logger LOGGER = LoggerFactory.getLogger(SubscriptionController.class);
 
@@ -44,5 +47,6 @@ public class SubscriptionController {
             LOGGER.info("The request takes {}", stopwatch.stop());
         });
     }
+
 
 }

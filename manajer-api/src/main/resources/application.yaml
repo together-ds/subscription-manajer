@@ -2,7 +2,7 @@ spring:
   codec:
     max-in-memory-size: 4194304
   r2dbc:
-    url: "r2dbc:h2:file:///~/manajer.db;AUTO_SERVER=TRUE;DATABASE_TO_LOWER=TRUE;"
+    url: "r2dbc:h2:file:///~/manajer;AUTO_SERVER=TRUE;DATABASE_TO_LOWER=TRUE;"
     username: root
     password: root
     pool:
@@ -11,12 +11,15 @@ spring:
       max-size: 10
       max-idle-time: 5m
       validation-query: SELECT 1
-  sql:
-    init:
-      mode: always
-  flyway:
-    locations:
-      - classpath:/db/migration/*
+#  sql:
+#    init:
+#      mode: always
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc: DEBUG
+
 manajer:
   base-path: /api
 
