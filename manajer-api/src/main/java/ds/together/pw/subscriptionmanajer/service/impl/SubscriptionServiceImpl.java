@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.POJONode;
 import com.fasterxml.jackson.databind.node.TextNode;
+import com.github.alexpumpkin.reactorlock.concurrency.LockMono;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Maps;
 import com.google.common.io.BaseEncoding;
@@ -73,6 +74,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Mono<String> get(String token) {
+        return LockMono.key(token)
+                       .lock(doGet(token));
+    }
+    public Mono<String> doGet(String token) {
         if (!Objects.equals(subscriptionProperties.getToken(), token)) {
             throw new RuntimeException("Unsupported token");
         }

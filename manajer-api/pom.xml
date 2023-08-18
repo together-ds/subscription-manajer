@@ -10,7 +10,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <artifactId>subscription-manajer</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>subscription-manajer</name>
     <description>Clash subscription manager</description>
     <properties>
@@ -67,6 +67,11 @@
             <groupId>io.projectreactor</groupId>
             <artifactId>reactor-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.alex-pumpkin</groupId>
+            <artifactId>reactor-lock-core</artifactId>
+            <version>0.2.0</version>
         </dependency>
     </dependencies>
 

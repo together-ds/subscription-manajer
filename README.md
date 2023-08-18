@@ -28,8 +28,7 @@ docker run  --user $(id -u):$(id -g)  -d \
 -p 8081:8080 \
 -v ~/manajer:/config \
 --restart unless-stopped \
-togetherds/manajer:native-latest \ 
---spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml \
+togetherds/manajer:native-latest --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml \
 
 ```
 
