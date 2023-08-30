@@ -350,13 +350,13 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         map.put("password", Iterables.get((userInfo), 1, null));
 
 
-        String obfs = Optional.ofNullable(pluginInfo.get("obfs")).map(Object::toString).orElse(null);
+        Object obfs = pluginInfo.get("obfs");
         Object simpleObfs = pluginInfo.get("simple-obfs");
         Object v2rayPlugin = pluginInfo.get("v2ray-plugin");
         Object obfsHost = pluginInfo.get("obfs-host");
         Object obfsLocal = pluginInfo.get("obfs-local");
 
-        if ((TRUE.equals(obfsLocal) || TRUE.equals(simpleObfs)) && Arrays.asList("tls", "http").contains(obfs)) {
+        if ((TRUE.equals(obfsLocal) || TRUE.equals(simpleObfs)) && Arrays.<Object>asList("tls", "http").contains(obfs)) {
 
             map.put("plugin", "obfs");
             HashMap<String, Object> pluginOpts = Maps.newHashMap();
