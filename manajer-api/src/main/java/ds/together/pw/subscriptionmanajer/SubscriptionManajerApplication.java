@@ -18,6 +18,7 @@ public class SubscriptionManajerApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+        LOGGER.info(System.getProperty("file.encoding"));
         LOGGER.info("Hello Manajer!");
     }
 }

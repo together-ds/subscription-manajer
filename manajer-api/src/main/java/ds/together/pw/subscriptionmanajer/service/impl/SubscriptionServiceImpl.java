@@ -74,25 +74,21 @@ public class SubscriptionServiceImpl implements SubscriptionService {
 
     @Override
     public Mono<String> get(String token) {
-        return LockMono.key(token)
-                       .lock(doGet(token));
+        return LockMono.key(token).lock(doGet(token));
     }
+
     public Mono<String> doGet(String token) {
         if (!Objects.equals(subscriptionProperties.getToken(), token)) {
             throw new RuntimeException("Unsupported token");
         }
-        return Flux.fromIterable(getSubscription())
-                   .flatMap(this::extractProxies)
-                   .subscribeOn(Schedulers.parallel())
-                   .collectSortedList(Comparator.comparingInt(value -> value.getSubscription().getOrder()))
-                   .map(results -> {
-                       Object o = this.combine(results);
-                       try {
-                           return yamlMapper.writeValueAsString(o);
-                       } catch (JsonProcessingException e) {
-                           throw new RuntimeException(e);
-                       }
-                   });
+        return Flux.fromIterable(getSubscription()).flatMap(this::extractProxies).subscribeOn(Schedulers.parallel()).collectSortedList(Comparator.comparingInt(value -> value.getSubscription().getOrder())).map(results -> {
+            Object o = this.combine(results);
+            try {
+                return yamlMapper.writeValueAsString(o);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
     }
 
@@ -116,9 +112,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
                 proxies.add(this.getEmptyNode(groupName));
             }
 
-            List<String> proxyNames = StreamSupport.stream(proxies.spliterator(), false)
-                                                   .map(jsonNode -> jsonNode.get("name").asText())
-                                                   .collect(Collectors.toList());
+            List<String> proxyNames = StreamSupport.stream(proxies.spliterator(), false).map(jsonNode -> jsonNode.get("name").asText()).collect(Collectors.toList());
 
             ProxyGroup auto = new ProxyGroup();
             auto.setName("[" + groupName + "] AUTO");
@@ -144,9 +138,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         List<String> selectNames = selectProxyGroups.stream().map(ProxyGroup::getName).toList();
 
         ArrayNode allProxies = yamlMapper.createArrayNode();
-        results.stream()
-               .map(SubscriptionResult::getProxies)
-               .forEach(allProxies::addAll);
+        results.stream().map(SubscriptionResult::getProxies).forEach(allProxies::addAll);
         root.set("proxies", allProxies);
 
         List<ProxyGroup> proxyGroups = yamlMapper.convertValue(root.get("proxy-groups"), new TypeReference<>() {
@@ -187,36 +179,39 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         String url = subscription.getUrl();
         String name = subscription.getName();
 
-        Mono<SubscriptionResult> loader =
-                webClient.get()
-                         .uri(URI.create(url))
-                         .exchangeToMono(response -> response.bodyToMono(String.class))
-                         .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
-                         .defaultIfEmpty("")
-                         .onErrorResume(e -> {
-                             LOGGER.info("获取[{}],失败. {}", name, e.getMessage());
-                             return Mono.just("");
-                         })
-                         .map(str -> {
-                             SubscriptionResult result = new SubscriptionResult(subscription);
-                             ArrayNode proxies;
-                             try {
-                                 proxies = getYamlProxies(str);
-                                 LOGGER.info("[{}] is yaml config.", name);
-                             } catch (Exception e) {
-                                 LOGGER.info("[{}] is not yaml config,try base64...", name);
-                                 proxies = getBase64Proxies(name, str);
-                             }
+        Mono<SubscriptionResult> loader = webClient.get()
+                .uri(URI.create(url))
+                .exchangeToMono(response -> response.bodyToMono(String.class))
+                .retryWhen(Retry.fixedDelay(2, Duration.ofSeconds(2)))//每隔2秒，尝试一次
+                .defaultIfEmpty("").onErrorResume(e -> {
+                    LOGGER.info("获取[{}],失败. {}", name, e.getMessage());
+                    return Mono.just("");
+                }).map(str -> {
+                    SubscriptionResult result = new SubscriptionResult(subscription);
+                    ArrayNode proxies;
+                    try {
+                        proxies = getYamlProxies(str);
+                        LOGGER.info("[{}] is yaml config.", name);
+                    } catch (Exception e) {
+                        try {
+                            proxies = getBase64Proxies(name, str);
+                            LOGGER.info("[{}] is base64 config", name);
+                        } catch (Exception ex) {
+                            LOGGER.warn(e.getMessage());
+                            proxies = yamlMapper.createArrayNode();
+                        }
+                    }
 
-                             for (JsonNode proxy : proxies) {
-                                 ObjectNode obj = (ObjectNode) proxy;
-                                 String proxyName = obj.get("name").asText("");
-                                 obj.set("name",
-                                         new TextNode(MessageFormat.format("[{0}] {1}", name, proxyName)));
-                             }
-                             result.setProxies(proxies);
-                             return result;
-                         });
+                    for (JsonNode proxy : proxies) {
+                        ObjectNode obj = (ObjectNode) proxy;
+                        String proxyName = obj.get("name").asText("");
+                        obj.set("name", new TextNode(MessageFormat.format("[{0}] {1}", name, proxyName)));
+                    }
+                    result.setProxies(proxies);
+                    return result;
+                });
+
+
         return maCacheService.load(name + "@" + url, loader, new TypeReference<>() {
         });
     }
@@ -225,14 +220,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         if (!BaseEncoding.base64().canDecode(str)) {
             throw new RuntimeException("Unknown config " + name);
         }
-        String[] split = decodeBase64(str).trim().split("\\r?\\n");
+        String[] split = decodeBase64(str).orElse("").trim().split("\\r?\\n");
         ArrayNode arrayNode = yamlMapper.createArrayNode();
-        Arrays.stream(split)
-              .filter(Objects::nonNull)
-              .filter(SubscriptionServiceImpl::isSupport)
-              .map(SubscriptionServiceImpl::parseProxyInfo)
-              .map(proxyInfo -> yamlMapper.convertValue(proxyInfo, JsonNode.class))
-              .forEach(arrayNode::add);
+        Arrays.stream(split).filter(Objects::nonNull).filter(SubscriptionServiceImpl::isSupport).map(SubscriptionServiceImpl::parseProxyInfo).map(proxyInfo -> yamlMapper.convertValue(proxyInfo, JsonNode.class)).forEach(arrayNode::add);
 
         return arrayNode;
     }
@@ -259,9 +249,9 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private static Map<String, Object> getVmessInfo(String link) {
         Map<String, Object> result = Maps.newLinkedHashMap();
         try {
-            String json = decodeBase64(link.replace(VMESS, ""));
+            String json = decodeBase64(link.replace(VMESS, "")).orElse(null);
             ObjectMapper mapper = new ObjectMapper();
-            Map<String, Object> config = mapper.readValue(json, Map.class);
+            Map<Object, Object> config = mapper.readValue(json, new TypeReference<>(){});
 
             result.put("name", config.get("ps"));
             result.put("type", "vmess");
@@ -353,20 +343,20 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         map.put("name", decodedFragment);
         map.put("server", uriComponents.getHost());
         map.put("port", uriComponents.getPort());
-        List<String> userInfo = Arrays.asList(decodeBase64(uriComponents.getUserInfo()).split(":"));
+        String userInfoStr = decodeBase64(uriComponents.getUserInfo()).orElse("");
+        List<String> userInfo = Arrays.asList(userInfoStr.split(":"));
 
         map.put("cipher", Iterables.get((userInfo), 0, null));
         map.put("password", Iterables.get((userInfo), 1, null));
 
 
-        Object obfs = pluginInfo.get("obfs");
+        String obfs = Optional.ofNullable(pluginInfo.get("obfs")).map(Object::toString).orElse(null);
         Object simpleObfs = pluginInfo.get("simple-obfs");
         Object v2rayPlugin = pluginInfo.get("v2ray-plugin");
         Object obfsHost = pluginInfo.get("obfs-host");
         Object obfsLocal = pluginInfo.get("obfs-local");
 
-        if ((TRUE.equals(obfsLocal) || TRUE.equals(simpleObfs))
-                && Arrays.asList("tls", "http").contains(obfs)) {
+        if ((TRUE.equals(obfsLocal) || TRUE.equals(simpleObfs)) && Arrays.asList("tls", "http").contains(obfs)) {
 
             map.put("plugin", "obfs");
             HashMap<String, Object> pluginOpts = Maps.newHashMap();
@@ -392,11 +382,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         return map;
     }
 
-    private static String decodeBase64(String str) {
+    private static Optional<String> decodeBase64(String str) {
         if (str == null) {
-            return null;
+            return Optional.empty();
         }
-        return new String(BaseEncoding.base64().decode(str));
+        return Optional.of(new String(BaseEncoding.base64().decode(str)));
     }
 
     private static String decodeUri(String str) {
