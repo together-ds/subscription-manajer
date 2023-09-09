@@ -63,7 +63,7 @@ jobs:
         working-directory: manajer-api
         run: |
           mvn -DskipTests=true -Pnative spring-boot:build-image
-          docker tag ${{ env.PROJECT_NAME }}:latest ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:native-latest
+          docker tag ${{ env.PROJECT_NAME }}:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:native-latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:native-latest
-          docker tag ${{ env.PROJECT_NAME }}:latest ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:native-${{ env.VERSION }}
+          docker tag ${{ env.PROJECT_NAME }}:${{ env.VERSION }} ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:native-${{ env.VERSION }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:native-${{ env.VERSION }}
