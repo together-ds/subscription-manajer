@@ -99,4 +99,31 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>native-arm64</id>
+            <properties>
+                <native-buildtools.version>0.9.9</native-buildtools.version>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <image>
+                                <builder>dashaun/builder:tiny</builder>
+                                <env>
+                                    <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                                </env>
+                                <name>${project.artifactId}:${project.version}-arm64</name>
+                            </image>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+    </profiles>
+
 </project>
