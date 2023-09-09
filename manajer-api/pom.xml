@@ -101,7 +101,17 @@
                                 <builder>dashaun/builder:tiny</builder>
                                 <env>
                                     <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                                    <BP_NATIVE_IMAGE_BUILD_ARGUMENTS> </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                                    <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>--initialize-at-build-time=\
+                                        org.slf4j.impl.StaticLoggerBinder\
+                                        ,org.slf4j.LoggerFactory\
+                                        ,ch.qos.logback.classic.Logger\
+                                        ,ch.qos.logback.core.spi.AppenderAttachableImpl\
+                                        ,ch.qos.logback.core.status.StatusBase\
+                                        ,ch.qos.logback.classic.Level\
+                                        ,ch.qos.logback.core.status.InfoStatus\
+                                        ,ch.qos.logback.classic.PatternLayout\
+                                        ,ch.qos.logback.core.CoreConstants
+                                    </BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
                                     <BPE_APPEND_JAVA_TOOL_OPTIONS>-Dfile.encoding=UTF-8</BPE_APPEND_JAVA_TOOL_OPTIONS>
                                 </env>
                                 <name>${project.artifactId}:${project.version}-arm64</name>
