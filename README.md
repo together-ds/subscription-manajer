@@ -8,7 +8,7 @@ docker pull togetherds/manajer:latest
 
 docker run --user $(id -u):$(id -g) -d \
 --name manajer \
--p 8081:8080 \
+-p 8080:8080 \
 -v ~/manajer:/config \
 --restart unless-stopped \
 togetherds/manajer:latest --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml
@@ -24,12 +24,12 @@ docker rm manajer0
 docker pull togetherds/manajer:native-latest
 
 docker run  --user $(id -u):$(id -g)  -d \
+-m 128m \
 --name manajer0 \
--p 8081:8080 \
+-p 8080:8080 \
 -v ~/manajer:/config \
 --restart unless-stopped \
-togetherds/manajer:native-latest --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml \
-
+togetherds/manajer:native-latest --spring.config.name=application --spring.config.location=classpath:/application.yaml,file:/config/manajer.yaml
 ```
 
 ```shell

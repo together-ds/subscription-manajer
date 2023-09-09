@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.9</version>
+        <version>3.0.10</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
     <artifactId>subscription-manajer</artifactId>
@@ -90,6 +90,8 @@
                         <env>
                             <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
                             <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>-march=compatibility</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                            <BPE_APPEND_JAVA_TOOL_OPTIONS>-Dfile.encoding=UTF-8</BPE_APPEND_JAVA_TOOL_OPTIONS>
+
                         </env>
             
                     </image>
