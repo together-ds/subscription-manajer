@@ -104,9 +104,6 @@
     <profiles>
         <profile>
             <id>native-arm64</id>
-            <properties>
-                <native-buildtools.version>0.9.9</native-buildtools.version>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
