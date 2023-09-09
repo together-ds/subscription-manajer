@@ -84,18 +84,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <imageName>${project.name}</imageName>
-                    <image>
-                        <env>
-                            <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
-                            <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>-march=compatibility</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
-                            <BPE_APPEND_JAVA_TOOL_OPTIONS>-Dfile.encoding=UTF-8</BPE_APPEND_JAVA_TOOL_OPTIONS>
-                        </env>
-            
-                    </image>
-                </configuration>
-
             </plugin>
         </plugins>
     </build>
@@ -117,6 +105,27 @@
                                     <BPE_APPEND_JAVA_TOOL_OPTIONS>-Dfile.encoding=UTF-8</BPE_APPEND_JAVA_TOOL_OPTIONS>
                                 </env>
                                 <name>${project.artifactId}:${project.version}-arm64</name>
+                            </image>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <configuration>
+                            <image>
+                                <env>
+                                    <BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
+                                    <BP_NATIVE_IMAGE_BUILD_ARGUMENTS>-march=compatibility</BP_NATIVE_IMAGE_BUILD_ARGUMENTS>
+                                    <BPE_APPEND_JAVA_TOOL_OPTIONS>-Dfile.encoding=UTF-8</BPE_APPEND_JAVA_TOOL_OPTIONS>
+                                </env>
+                                <name>${project.artifactId}:${project.version}</name>
                             </image>
                         </configuration>
                     </plugin>
