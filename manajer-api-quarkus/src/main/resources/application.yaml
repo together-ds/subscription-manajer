@@ -1,0 +1,9 @@
+quarkus:
+  datasource:
+    db-kind: h2
+    jdbc:
+      url: jdbc:h2:file:/config/manajer;AUTO_SERVER=TRUE;DATABASE_TO_LOWER=TRUE;
+    password: root
+    username: root
+  flyway:
+    migrate-at-start: true

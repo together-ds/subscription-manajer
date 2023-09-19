@@ -1,0 +1,8 @@
+manajer:
+  token: your-token
+  subscriptions:
+    - name: 'name0'
+      url: https://example.com/clash-config-url-0
+    - name: 'name1'
+      url: https://example.com/clash-config-url-1
+
