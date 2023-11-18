@@ -23,6 +23,9 @@ proxy-groups:
       - DIRECT
       - $$selectGroups$$
 
+  - name: $$selectProxyGroups$$
+  - name: $$autoProxyGroups$$
+
   - name: ⚖️ LB
     type: load-balance
     proxies:
